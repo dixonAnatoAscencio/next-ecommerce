@@ -12,11 +12,13 @@ interface State {
     subTotal: number;
     tax: number;
     total: number;
-  }
+  };
 
   addProductTocart: (product: CartProduct) => void;
   updateProductQuantity: (product: CartProduct, quantity: number) => void;
   removeProduct: (product: CartProduct) => void;
+
+  clearCart: () => void;
 
   //updateProductQuantity
   // removeProduct
@@ -45,14 +47,17 @@ export const useCartStore = create<State>()(
         );
         const tax = subTotal * 0.15;
         const total = subTotal + tax;
-        const itemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
+        const itemsInCart = cart.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
 
         return {
           itemsInCart,
           subTotal,
           tax,
           total,
-        }
+        };
       },
 
       addProductTocart: (product: CartProduct) => {
@@ -97,6 +102,10 @@ export const useCartStore = create<State>()(
           (item) => item.id !== product.id || item.size !== product.size
         );
         set({ cart: updatedCartProducts });
+      },
+
+      clearCart: () => {
+        set({ cart: [] });
       },
     }),
 

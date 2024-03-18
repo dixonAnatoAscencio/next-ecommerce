@@ -6,8 +6,12 @@ async function main() {
   //1. Borrar registros previos
   // await Promise.all([
 
+  await prisma.orderAddress.deleteMany();
+  await prisma.orderItem.deleteMany();
+  await prisma.order.deleteMany();
+
   await prisma.userAddress.deleteMany();
-  await prisma.user.deleteMany();//por la integridad referencial hay que ver si hay alguna referencia para ver si
+  await prisma.user.deleteMany(); //por la integridad referencial hay que ver si hay alguna referencia para ver si
   //se debe borrar antes los productos o los usuarios!!
   await prisma.country.deleteMany();
 
@@ -22,11 +26,11 @@ async function main() {
 
   await prisma.user.createMany({
     data: users,
-  })
+  });
 
   await prisma.country.createMany({
     data: countries,
-  })
+  });
 
   const categoriesData = categories.map((name) => ({ name }));
 
