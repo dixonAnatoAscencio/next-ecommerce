@@ -16,4 +16,11 @@ export * from "./order/get-order-by-id";
 
 export * from "./product/product-pagination";
 export * from "./product/get-product-by-slug";
+export * from "./product/create-update-product";
 export * from "./product/get-stock-by-slug";
+export * from "./order/get-paginated-orders";
+export * from "./user/get-paginated-users";
+
+export * from "./user/change-user-role";
+export * from "./category/get-categories";
+export * from "./product/delete-product-image";

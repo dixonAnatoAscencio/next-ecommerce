@@ -17,3 +17,4 @@ export * from "./ui/sidebar/Sidebar";
 export * from "./ui/footer/Footer";
 export * from "./ui/pagination/Pagination";
 export * from "./paypal/PayPalButton";
+export * from "./product/product-image/ProductImage";
