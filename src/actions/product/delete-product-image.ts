@@ -9,14 +9,14 @@ export const deleteProductImage = async (imageId: number, imageUrl: string) => {
   if (!imageUrl.startsWith("http")) {
     return {
       ok: false,
-      error: "No se pueden borrar imagenes de File System",
+      error: "No se pueden borrar imagenes de FS",
     };
   }
 
   const imageName = imageUrl.split("/").pop()?.split(".")[0] ?? "";
 
   try {
-    await cloudinary.uploader.destroy(imageName); //Borrar la imagen de cloudinary
+    await cloudinary.uploader.destroy(imageName);
     const deletedImage = await prisma.productImage.delete({
       where: {
         id: imageId,
@@ -30,7 +30,7 @@ export const deleteProductImage = async (imageId: number, imageUrl: string) => {
       },
     });
 
-    //Revalidate Paths
+    // Revalidar los paths
     revalidatePath(`/admin/products`);
     revalidatePath(`/admin/product/${deletedImage.product.slug}`);
     revalidatePath(`/product/${deletedImage.product.slug}`);
@@ -38,7 +38,7 @@ export const deleteProductImage = async (imageId: number, imageUrl: string) => {
     console.log(error);
     return {
       ok: false,
-      message: "No se pudo borrar la imagen",
+      message: "No se pudo eliminar la imagen",
     };
   }
 };

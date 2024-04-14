@@ -82,7 +82,7 @@ export const createUpdateProduct = async (formData: FormData) => {
         // [https://url.jpg, https://url.jpg]
         const images = await uploadImages(formData.getAll("images") as File[]);
         if (!images) {
-          throw new Error("No se pudo cargar las imágenes, rollingback"); //cuando se lanza una excepcion en un transaction, se hace un rollback
+          throw new Error("No se pudo cargar las imágenes, rollingback");
         }
 
         await prisma.productImage.createMany({

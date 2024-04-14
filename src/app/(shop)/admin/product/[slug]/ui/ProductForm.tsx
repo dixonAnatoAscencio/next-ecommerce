@@ -1,16 +1,16 @@
 "use client";
 
-import { createUpdateProduct, deleteProductImage } from "@/actions";
-import { ProductImage } from "@/components";
+import { useForm } from "react-hook-form";
 import {
   Category,
   Product,
   ProductImage as ProductWithImage,
 } from "@/interfaces";
-import clsx from "clsx";
 import Image from "next/image";
+import clsx from "clsx";
+import { createUpdateProduct, deleteProductImage } from "@/actions";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { ProductImage } from "@/components";
 
 interface Props {
   product: Partial<Product> & { ProductImage?: ProductWithImage[] };
@@ -30,7 +30,6 @@ interface FormInputs {
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
 
-  //todo: imagenes
   images?: FileList;
 }
 
@@ -41,29 +40,29 @@ export const ProductForm = ({ product, categories }: Props) => {
     handleSubmit,
     register,
     formState: { isValid },
-    getValues, //Obtener los valores del estado del formulario
-    setValue, //Cambiar los valores del estado del formulario
-    watch, //Cuando tiene que volverse a renderizar en caso de que haya algun cambio en el formulario
+    getValues,
+    setValue,
+    watch,
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
-      tags: product.tags?.join(", "), //Cuando sea un set de datos, como un arreglo de strings usamos el join
+      tags: product.tags?.join(", "),
       sizes: product.sizes ?? [],
+
       images: undefined,
     },
   });
 
-  watch("sizes"); //Cuando cambie el valor de sizes, se va a volver a renderizar
+  watch("sizes");
 
   const onSizeChanged = (size: string) => {
-    const sizes = new Set(getValues("sizes")); //Set es un tipo de dato que no permite duplicados
-
+    const sizes = new Set(getValues("sizes"));
     sizes.has(size) ? sizes.delete(size) : sizes.add(size);
     setValue("sizes", Array.from(sizes));
   };
 
   const onSubmit = async (data: FormInputs) => {
-    const formData = new FormData(); //creamos el formulario que quiero enviar
+    const formData = new FormData();
 
     const { images, ...productToSave } = data;
 
@@ -90,7 +89,8 @@ export const ProductForm = ({ product, categories }: Props) => {
     const { ok, product: updatedProduct } = await createUpdateProduct(formData);
 
     if (!ok) {
-      return alert("Error al guardar el producto");
+      alert("Producto no se pudo actualizar");
+      return;
     }
 
     router.replace(`/admin/product/${updatedProduct?.slug}`);
@@ -121,14 +121,12 @@ export const ProductForm = ({ product, categories }: Props) => {
           />
         </div>
 
-        <div
-          className="flex flex-col mb-2"
-          {...register("description", { required: true })}
-        >
+        <div className="flex flex-col mb-2">
           <span>Descripción</span>
           <textarea
             rows={5}
             className="p-2 border rounded-md bg-gray-200"
+            {...register("description", { required: true })}
           ></textarea>
         </div>
 
@@ -171,7 +169,6 @@ export const ProductForm = ({ product, categories }: Props) => {
             {...register("categoryId", { required: true })}
           >
             <option value="">[Seleccione]</option>
-            {/*Selector */}
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -220,9 +217,9 @@ export const ProductForm = ({ product, categories }: Props) => {
             <input
               type="file"
               {...register("images")}
-              multiple //Para que se puedan subir varias imagenes
+              multiple
               className="p-2 border rounded-md bg-gray-200"
-              accept="image/png, image/jpeg image/avif"
+              accept="image/png, image/jpeg, image/avif"
             />
           </div>
 
@@ -230,8 +227,8 @@ export const ProductForm = ({ product, categories }: Props) => {
             {product.ProductImage?.map((image) => (
               <div key={image.id}>
                 <ProductImage
-                  src={image.url}
                   alt={product.title ?? ""}
+                  src={image.url}
                   width={300}
                   height={300}
                   className="rounded-t shadow-md"
